@@ -1,0 +1,47 @@
+ccurl - Simple HTTP Client for TROPIX
+======================================
+
+A minimal curl-like HTTP client written in C using TROPIX libc and XTI.
+
+FEATURES
+--------
+- Download files via HTTP (no HTTPS support)
+- Output to stdout or save to file
+- Simple command-line interface
+
+BUILDING
+--------
+make
+
+USAGE
+-----
+ccurl [-v] [-o file] <url>
+
+OPTIONS
+-------
+-v        Verbose mode
+-o file   Save output to file instead of stdout
+
+EXAMPLES
+--------
+Download to stdout:
+  ccurl http://example.com/index.html
+
+Save to file:
+  ccurl -o index.html http://example.com/index.html
+
+Verbose mode:
+  ccurl -v http://example.com/
+
+LIMITATIONS
+-----------
+- HTTP only (no HTTPS)
+- HTTP/1.0 protocol
+- No authentication support
+- No redirect following
+- Basic error handling
+
+IMPLEMENTATION
+--------------
+Uses TROPIX XTI (X/Open Transport Interface) via /dev/itntcp for TCP connections.
+Based on the www client in cmd/itnet/www.
