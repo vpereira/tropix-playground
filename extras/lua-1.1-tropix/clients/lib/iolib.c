@@ -10,6 +10,7 @@ char *rcs_iolib="$Id: iolib.c,v 1.4 1994/04/25 20:11:23 celes Exp $";
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/types.h>
+#include <stat.h>
 #ifdef __GNUC__
 #include <floatingpoint.h>
 #endif
@@ -142,9 +143,9 @@ static void io_appendto (void)
   {
    int r;
    FILE *fp;
-   fp = fopen (lua_getstring(o),"r");
-   if (fp == NULL) r = 1;
-   else { fclose (fp); r = 2; }
+   STAT st;
+   if (stat(lua_getstring(o), &st) == -1) r = 1;
+   else                                  r = 2;
    fp = fopen (lua_getstring(o),"a");
    if (fp == NULL)
    {

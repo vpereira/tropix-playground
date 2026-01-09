@@ -11,6 +11,6 @@ Build system
 
 Source changes
 - `include/mm.h` now has a header guard (was empty).
-- `src/hash.c` and `src/hash.h` renamed `nhash` parameter to `n_hash` and avoided `new` as a variable name for Tropix `cc`.
+- `src/hash.c` and `src/hash.h` rename the `nhash` parameter to `n_hash` to avoid a macro name collision; `src/hash.c` also avoids `new` as a variable name for Tropix `cc`.
 - `src/opcode.c` dropped redundant `strtod` declaration.
-- `clients/lib/iolib.c` avoids `stat(2)` and checks file existence via `fopen`.
+- `clients/lib/iolib.c` uses `stat(2)` with `<stat.h>` for file existence checks.
