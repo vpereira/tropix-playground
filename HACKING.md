@@ -46,6 +46,7 @@ Boot process and partitioning instructions are in `install.txt`. Quick summary:
 4. Run installer: `cd /usr/etc/install && install`
 5. Mark root partition bootable in fdisk
 6. Change to `-boot c` and reboot
+7. Enable multi-user model with CTRL+D. You should see a login prompt.
 
 Refer to `install.txt` for complete installation procedure.
 
@@ -109,6 +110,8 @@ Telnet to VM once network is configured:
 telnet <tropix-ip> 23
 ```
 
+Make sure you have the correct encoding (Latin-1) enabled on your terminal. Set your TERM to vt100
+
 ![Remote telnet access](images/telnet.png)
 
 Default credentials: root/tropix
@@ -132,6 +135,7 @@ Tropix includes:
 - Lua interpreter
 - Standard Unix utilities (awk, sed, grep, etc.)
 - Dont use tar in tropix, instead gar. There is some incompatibility with the tar from mac. 
+- `rm -rf` does not delete directories; use `rmtree -f` for non-empty directories and `rmdir -f` for empty ones.
 
 ![Lua interpreter](images/lua.png)
 
@@ -148,3 +152,6 @@ Check QEMU has vmnet support: `qemu-system-i386 -netdev help | grep vmnet`
 - `install.txt` - Complete installation guide
 - `scripts/run-tropix.zsh` - QEMU launcher script
 - `lib/`, `kernel/`, `cmd/` - Source code
+
+
+Happy hacking and Have a lot of fun!
