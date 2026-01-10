@@ -13,7 +13,7 @@ cria diretórios
 .b SINTAXE
 .in 5
 .(l
-mkdir [-f] <diretório> ...
+mkdir [-f|-p] <diretório> ...
 .)l
 
 .in
@@ -45,6 +45,21 @@ o comando espera que "alpha" já exista).
 .sp
 Com esta opção,
 "mkdir" cria também estes diretórios intermediários faltando.
+
+.sp
+Se o diretório final já existir, o comando retornará erro.
+
+.ip -p
+Cria os diretórios intermediários (se necessário), modo POSIX.
+
+.sp
+Esta opção funciona como "-f", mas com comportamento POSIX:
+se o diretório final já existir, o comando não retorna erro
+e termina com código de saída 0 (sucesso).
+
+.sp
+Esta é a opção padrão em sistemas Unix/POSIX e útil em scripts,
+permitindo que "mkdir -p" seja executado de forma idempotente.
 
 .ep
 .in -3

@@ -7,6 +7,7 @@
  *								*
  *	Versão	1.0.0, de 08.04.86				*
  *		4.2.0, de 10 05.02				*
+ *		4.2.1, de 10 01.26				*
  *								*
  *	Módulo: mkdir						*
  *		Utilitários Básicos				*
@@ -30,13 +31,14 @@
  *	Variáveis e Definições globais				*
  ****************************************************************
  */
-const char	pgversion[] =  "Versão:	4.2.0, de 10.05.02";
+const char	pgversion[] =  "Versão:	4.2.1, de 10.01.26";
 
 #define	elif	else if
 
 #define		MODO	0777	/* Modo do diretório criado */
 
 entry int	fflag;		/* Cria os subdiretórios */
+entry int	pflag;		/* Cria os subdiretórios (modo POSIX, não falha se existir) */
 entry int	vflag;		/* Verbose */
 entry int	dflag;		/* Debug */
 
@@ -59,12 +61,16 @@ main (int argc, const char *argv[])
 	/*
 	 *	Analisa as opções
 	 */
-	while ((opt = getopt (argc, argv, "fvdH")) != EOF)
+	while ((opt = getopt (argc, argv, "fpvdH")) != EOF)
 	{
 		switch (opt)
 		{
 		    case 'f':			/* Cria os subdiretórios */
 			fflag++;
+			break;
+
+		    case 'p':			/* Cria os subdiretórios (POSIX) */
+			pflag++;
 			break;
 
 		    case 'v':			/* Verbose */
@@ -100,11 +106,21 @@ main (int argc, const char *argv[])
 	 */
 	for (/* vazio */; *argv != NOSTR; argv++)
 	{
-		if (fflag && ver_dir ((char *)*argv) < 0)
-			{ exit_code++; continue; }
+		if ((fflag || pflag) && ver_dir ((char *)*argv) < 0)
+		{
+			/* Se for modo POSIX e erro foi EEXIST, ignora */
+			if (pflag && errno == EEXIST)
+				continue;
+			exit_code++;
+			continue;
+		}
 
 		if (mkdir (*argv, MODO) < 0)
 		{
+			/* Se for modo POSIX e diretório já existe, não é erro */
+			if (pflag && errno == EEXIST)
+				continue;
+
 			error ("*Não consegui criar o diretório \"%s\"", *argv);
 			exit_code++;
 		}
@@ -158,7 +174,7 @@ help (void)
 		"%s - cria diretórios\n"
 		"\n%s\n"
 		"\nSintaxe:\n"
-		"\t%s [-f] <diretório> ...\n",
+		"\t%s [-f|-p] <diretório> ...\n",
 		pgname, pgversion, pgname
 	);
 
@@ -166,6 +182,7 @@ help (void)
 	(	stderr,
 		"\nOpções:"
 		"\t-f: Cria os diretórios intermediários (se necessário)\n"
+		"\t-p: Cria os diretórios intermediários, não falha se já existir (POSIX)\n"
 	);
 
 	exit (2);
