@@ -1,11 +1,11 @@
-.he 'MKDIR (cmd)'TROPIX: Manual de Referência'MKDIR (cmd)'
-.fo 'Atualizado em 10.05.02'Versão 4.2.0'Pag. %'
+.he 'MKDIR (cmd)'TROPIX: Manual de Referï¿½ncia'MKDIR (cmd)'
+.fo 'Atualizado em 10.05.02'Versï¿½o 4.2.0'Pag. %'
 .bp
 
 .b NOME
 .in 5
 .wo "mkdir -"
-cria diretórios
+cria diretï¿½rios
 .br
 
 .in
@@ -13,38 +13,53 @@ cria diretórios
 .b SINTAXE
 .in 5
 .(l
-mkdir [-f] <diretório> ...
+mkdir [-f|-p] <diretï¿½rio> ...
 .)l
 
 .in
 .sp
-.b DESCRIÇÃO
+.b DESCRIï¿½ï¿½O
 .in 5
-O comando "mkdir" cria os <diretório>s dados.
+O comando "mkdir" cria os <diretï¿½rio>s dados.
 
 .sp
-As entradas "." (o próprio diretório) e ".." (o pai do diretório)
-são criadas automaticamente.
+As entradas "." (o prï¿½prio diretï¿½rio) e ".." (o pai do diretï¿½rio)
+sï¿½o criadas automaticamente.
 
 .sp
-A criação de um diretório requer a permissão de escrita no pai
-do diretório que se deseja criar.
+A criaï¿½ï¿½o de um diretï¿½rio requer a permissï¿½o de escrita no pai
+do diretï¿½rio que se deseja criar.
 
 .sp
-As opções do comando são:
+As opï¿½ï¿½es do comando sï¿½o:
 
 .in +3
 .ip -f
-Cria os diretórios intermediários (se necessário).
+Cria os diretï¿½rios intermediï¿½rios (se necessï¿½rio).
 
 .sp
-Normalmente, "mkdir" espera que os diretórios intermediários
-já existam (por exemplo, no comando "mkdir alpha/beta",
-o comando espera que "alpha" já exista).
+Normalmente, "mkdir" espera que os diretï¿½rios intermediï¿½rios
+jï¿½ existam (por exemplo, no comando "mkdir alpha/beta",
+o comando espera que "alpha" jï¿½ exista).
 
 .sp
-Com esta opção,
-"mkdir" cria também estes diretórios intermediários faltando.
+Com esta opï¿½ï¿½o,
+"mkdir" cria tambï¿½m estes diretï¿½rios intermediï¿½rios faltando.
+
+.sp
+Se o diretï¿½rio final jï¿½ existir, o comando retornarï¿½ erro.
+
+.ip -p
+Cria os diretï¿½rios intermediï¿½rios (se necessï¿½rio), modo POSIX.
+
+.sp
+Esta opï¿½ï¿½o funciona como "-f", mas com comportamento POSIX:
+se o diretï¿½rio final jï¿½ existir, o comando nï¿½o retorna erro
+e termina com cï¿½digo de saï¿½da 0 (sucesso).
+
+.sp
+Esta ï¿½ a opï¿½ï¿½o padrï¿½o em sistemas Unix/POSIX e ï¿½til em scripts,
+permitindo que "mkdir -p" seja executado de forma idempotente.
 
 .ep
 .in -3
@@ -52,7 +67,7 @@ Com esta opção,
 .in
 .sp
 .b
-VEJA TAMBÉM
+VEJA TAMBï¿½M
 .r
 .in 5
 .wo "(sys): "
