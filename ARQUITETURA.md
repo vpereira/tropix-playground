@@ -108,6 +108,10 @@ O caminho de boot e a inicializacao do kernel sao definidos em `kernel/boot/` e 
 
 O boot2 carrega a imagem do kernel e passa um Boot Control Block (BCB). O init do kernel (`kernel/kernel/etc/kinit.c`) consome o BCB para construir o SCB, tabela de discos, estado de video e bookkeeping de memoria. `kernel/kernel/etc/main.c` finaliza a inicializacao, monta o filesystem raiz, cria nos em `/dev` e inicia o `init`.
 
+## Processo de init
+
+`/etc/init` coordena a inicializacao em tres fases: modo monousuario no console para manutencao, execucao de `/etc/rc` para inicializacao do sistema e modo multiusuario onde um processo de login e criado por terminal ativo conforme `/etc/initab`. O estado de runtime fica em `/etc/utmp` e `/etc/mtab`, com defaults de ambiente em `/etc/globalenv`.
+
 ## Utilitarios de comando (140 comandos)
 
 **Operacoes de arquivo:** cat, cp, mv, rm, ls, ln, chmod, chown

@@ -108,6 +108,10 @@ Boot path and kernel bring-up are defined in `kernel/boot/` and `kernel/kernel/e
 
 boot2 loads the kernel image and passes a Boot Control Block (BCB). Kernel init (`kernel/kernel/etc/kinit.c`) consumes the BCB to build the SCB, disk table, video state, and memory bookkeeping. `kernel/kernel/etc/main.c` finishes initialization, mounts the root filesystem, creates `/dev` nodes, and starts `init`.
 
+## Init Process
+
+`/etc/init` coordinates system startup in three phases: single-user mode on the console for maintenance, execution of `/etc/rc` for system initialization, and multi-user mode where a login process is spawned per active terminal as defined in `/etc/initab`. Runtime state is tracked in `/etc/utmp` and `/etc/mtab`, with environment defaults in `/etc/globalenv`.
+
 ## Command Utilities (140 commands)
 
 **File Operations:** cat, cp, mv, rm, ls, ln, chmod, chown

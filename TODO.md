@@ -45,3 +45,12 @@ tcmpfrom -f -C -F -n remotebox -u user /path
 # Direct copy
 tcpto -F -n remotebox -u user /path
 ```
+
+## System Tasks
+
+- Make mkdir POSIX-compliant (-p instead of -f, etc).
+- Add sha1sum, md5sum, whoami, find, id.
+- Add readline, bash, openssl.
+- Install on Proxmox.
+- Build new image with network defaults (boot via DHCP).
+- Test DHCP.
