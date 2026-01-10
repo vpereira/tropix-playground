@@ -40,6 +40,7 @@ Source code from NCE/UFRJ, I just had to modify the libc/fmt/licenca (licença),
 - `lib/` - System libraries
 - `kernel/` - Kernel sources
 - `cmd/` - Command utilities
+- `sxwin` - X-Window Graphical Interface
 
 ## Documentation
 
