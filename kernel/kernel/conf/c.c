@@ -260,6 +260,11 @@ extern int	ps2mread ();
 extern int	ps2mwrite ();
 extern int	ps2mctl ();
 
+extern int	rngopen ();
+extern int	rngclose ();
+extern int	rngread ();
+extern int	rngwrite ();
+
 /*
  ******	Protótipos de funções de "live" *************************
  */
@@ -387,6 +392,7 @@ const CIOTAB	ciotab[]	=
 	null,		liveopen,	liveclose,	no,		livewrite,	null, 	    /* 31 */
 	null,		umsopen,	umsclose,	umsread,	no,		umsctl,     /* 32 */
 	null,		ulpopen,	ulpclose,	no,		ulpwrite,	no,	    /* 33 */
+	null,		rngopen,	rngclose,	rngread,	rngwrite,	no,	    /* 34 */
 	NOFUNC
 
 }	/* end ciotab */;

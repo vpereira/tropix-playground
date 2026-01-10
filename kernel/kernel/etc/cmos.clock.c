@@ -31,6 +31,8 @@ int		bcd_to_int  (unsigned int);
 unsigned long 	years_to_unix_seconds (unsigned int);
 unsigned long 	months_to_unix_seconds (unsigned int, int);
 
+extern void	rng_seed (unsigned long);
+
 /*
  ****************************************************************
  *	Registros do relógio no CMOS				*
@@ -119,6 +121,12 @@ init_time_from_cmos (void)
 		sec -= (scb.y_tzmin * 60);	/* Hora Local */
 
 	time = sec;
+
+	/* Semeia o gerador simples de /dev/urandom */
+	rng_seed (sec);
+	rng_seed ((unsigned long)read_cmos (RTC_SEC) |
+		((unsigned long)read_cmos (RTC_MIN) << 8) |
+		((unsigned long)read_cmos (RTC_HRS) << 16));
 
 }	/* end init_time_from_cmos */
 
