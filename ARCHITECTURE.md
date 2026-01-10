@@ -101,11 +101,12 @@ Filesystem interface
 
 Boot path and kernel bring-up are defined in `kernel/boot/` and `kernel/kernel/etc/`:
 
-1. **boot0** - Primary bootloader (assembly)
-2. **boot1** - Secondary loader, filesystem-aware (V7FS, T1FS)
-3. **boot2** - Final loader, switches to 32-bit mode and uses built-in disk drivers (floppy, IDE, Adaptec 1542, AIC7xxx)
+1. **BIOS** reads the first 512-byte block from the boot disk and transfers control.
+2. **boot0** loads itself from disk in 16-bit mode via INT 13h, detects active partitions, shows a selectable menu with a configurable default/timeout, and either chainloads another OS or loads boot1 from the chosen partition. It prefers INT 13h extensions when available to support >8 GB and cylinders >1024.
+3. **boot1** remains 16-bit, prompts for the boot2 file (default `/boot`), chooses video mode (SVGA default with VGA fallback and CLI overrides), reads boot2 from the filesystem (V7FS or T1FS), and transfers control.
+4. **boot2** switches to 32-bit mode, uses built-in drivers (floppy, IDE, Adaptec 1542, AIC7xxx), selects the kernel image (default `/tropix`) and device (default: first Tropix partition found), and can run maintenance commands (partition table, directory listing, hex dumps, RAM disk load). Defaults are configurable via `edboot`.
 
-boot2 loads the kernel image (default `/tropix`) and passes a Boot Control Block (BCB). Kernel init (`kernel/kernel/etc/kinit.c`) consumes the BCB to build the SCB, disk table, video state, and memory bookkeeping. `kernel/kernel/etc/main.c` finishes initialization, mounts the root filesystem, creates `/dev` nodes, and starts `init`.
+boot2 loads the kernel image and passes a Boot Control Block (BCB). Kernel init (`kernel/kernel/etc/kinit.c`) consumes the BCB to build the SCB, disk table, video state, and memory bookkeeping. `kernel/kernel/etc/main.c` finishes initialization, mounts the root filesystem, creates `/dev` nodes, and starts `init`.
 
 ## Command Utilities (140 commands)
 
