@@ -71,6 +71,7 @@ OBJ =	 	obj/ahc_pci.o			\
 		obj/live.o			\
 		obj/lp.o			\
 		obj/memdev.o			\
+		obj/rng.o			\
 		obj/meta_dos.o			\
 		obj/pci.o			\
 		obj/physio.o			\
@@ -963,6 +964,15 @@ obj/memdev.o:	dev/memdev.c		\
 		h/uproc.h		\
 		h/ioctl.h
 		$CC -c -O $DEF -o obj dev/memdev.c
+
+obj/rng.o:	dev/rng.c		\
+		h/common.h		\
+		h/sync.h		\
+		h/scb.h		\
+		h/region.h		\
+		h/inode.h		\
+		h/uerror.h
+		$CC -c -O $DEF -o obj dev/rng.c
 
 obj/meta_dos.o:	dev/meta_dos.c		\
 		h/common.h		\
