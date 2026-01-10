@@ -3,17 +3,18 @@
  *								*
  *			mkdir.c					*
  *								*
- *	Cria diretï¿½rios						*
+ *	Cria diretórios						*
  *								*
- *	Versï¿½o	1.0.0, de 08.04.86				*
+ *	Versão	1.0.0, de 08.04.86				*
  *		4.2.0, de 10 05.02				*
+ *		4.2.1, de 10 01.26				*
  *								*
- *	Mï¿½dulo: mkdir						*
- *		Utilitï¿½rios Bï¿½sicos				*
+ *	Módulo: mkdir						*
+ *		Utilitários Básicos				*
  *		Categoria B					*
  *								*
  *	TROPIX: Sistema Operacional Tempo-Real Multiprocessado	*
- *		Copyright ï¿½ 2002 NCE/UFRJ - tecle "man licenï¿½a"	*
+ *		Copyright © 2002 NCE/UFRJ - tecle "man licença"	*
  * 								*
  ****************************************************************
  */
@@ -27,29 +28,29 @@
 
 /*
  ****************************************************************
- *	Variï¿½veis e Definiï¿½ï¿½es globais				*
+ *	Variáveis e Definições globais				*
  ****************************************************************
  */
-const char	pgversion[] =  "Versï¿½o:	4.2.0, de 10.05.02";
+const char	pgversion[] =  "Versão:	4.2.1, de 10.01.26";
 
 #define	elif	else if
 
-#define		MODO	0777	/* Modo do diretï¿½rio criado */
+#define		MODO	0777	/* Modo do diretório criado */
 
-entry int	fflag;		/* Cria os subdiretï¿½rios */
-entry int	pflag;		/* Cria os subdiretï¿½rios (modo POSIX, nï¿½o falha se existir) */
+entry int	fflag;		/* Cria os subdiretórios */
+entry int	pflag;		/* Cria os subdiretórios (modo POSIX, não falha se existir) */
 entry int	vflag;		/* Verbose */
 entry int	dflag;		/* Debug */
 
 /*
- ******	Protï¿½tipos de funï¿½ï¿½es ***********************************
+ ******	Protótipos de funções ***********************************
  */
 int		ver_dir (char *);
 void		help (void);
 
 /*
  ****************************************************************
- *	Cria diretï¿½rios						*
+ *	Cria diretórios						*
  ****************************************************************
  */
 int
@@ -58,17 +59,17 @@ main (int argc, const char *argv[])
 	int		opt, exit_code = 0;
 
 	/*
-	 *	Analisa as opï¿½ï¿½es
+	 *	Analisa as opções
 	 */
 	while ((opt = getopt (argc, argv, "fpvdH")) != EOF)
 	{
 		switch (opt)
 		{
-		    case 'f':			/* Cria os subdiretï¿½rios */
+		    case 'f':			/* Cria os subdiretórios */
 			fflag++;
 			break;
 
-		    case 'p':			/* Cria os subdiretï¿½rios (POSIX) */
+		    case 'p':			/* Cria os subdiretórios (POSIX) */
 			pflag++;
 			break;
 
@@ -101,7 +102,7 @@ main (int argc, const char *argv[])
 		help ();
 
 	/*
-	 *	Cria os diretï¿½rios
+	 *	Cria os diretórios
 	 */
 	for (/* vazio */; *argv != NOSTR; argv++)
 	{
@@ -116,11 +117,11 @@ main (int argc, const char *argv[])
 
 		if (mkdir (*argv, MODO) < 0)
 		{
-			/* Se for modo POSIX e diretï¿½rio jï¿½ existe, nï¿½o ï¿½ erro */
+			/* Se for modo POSIX e diretório já existe, não é erro */
 			if (pflag && errno == EEXIST)
 				continue;
 
-			error ("*Nï¿½o consegui criar o diretï¿½rio \"%s\"", *argv);
+			error ("*Não consegui criar o diretório \"%s\"", *argv);
 			exit_code++;
 		}
 	}
@@ -131,7 +132,7 @@ main (int argc, const char *argv[])
 
 /*
  ****************************************************************
- *	Cria os diretï¿½rios intermediï¿½rios faltando		*
+ *	Cria os diretórios intermediários faltando		*
  ****************************************************************
  */
 int
@@ -147,7 +148,7 @@ ver_dir (char *file_nm)
 
 			if (access (file_nm, F_OK) < 0 && mkdir (file_nm, MODO) < 0)
 			{
-				error ("*Nï¿½o consegui criar o diretï¿½rio \"%s\"", file_nm);
+				error ("*Não consegui criar o diretório \"%s\"", file_nm);
 
 				*cp = '/'; return (-1);
 			}
@@ -162,7 +163,7 @@ ver_dir (char *file_nm)
 
 /*
  ****************************************************************
- *	Resumo de utilizaï¿½ï¿½o do programa			*
+ *	Resumo de utilização do programa			*
  ****************************************************************
  */
 void
@@ -170,18 +171,18 @@ help (void)
 {
 	fprintf
 	(	stderr,
-		"%s - cria diretï¿½rios\n"
+		"%s - cria diretórios\n"
 		"\n%s\n"
 		"\nSintaxe:\n"
-		"\t%s [-f|-p] <diretï¿½rio> ...\n",
+		"\t%s [-f|-p] <diretório> ...\n",
 		pgname, pgversion, pgname
 	);
 
 	fprintf
 	(	stderr,
-		"\nOpï¿½ï¿½es:"
-		"\t-f: Cria os diretï¿½rios intermediï¿½rios (se necessï¿½rio)\n"
-		"\t-p: Cria os diretï¿½rios intermediï¿½rios, nï¿½o falha se jï¿½ existir (POSIX)\n"
+		"\nOpções:"
+		"\t-f: Cria os diretórios intermediários (se necessário)\n"
+		"\t-p: Cria os diretórios intermediários, não falha se já existir (POSIX)\n"
 	);
 
 	exit (2);
