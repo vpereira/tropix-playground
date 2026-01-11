@@ -2,6 +2,10 @@
 
 Revival and preservation of Tropix - Brazilian Unix-like operating system developed at NCE/UFRJ from 1988 to 2008.
 
+![Tropix mascot (unofficial)](images/mascote/tropix.png)
+
+Unofficial mascot: a parakeet, "periquito" (small Brazilian parrot).
+
 ## About
 
 Tropix is a real-time multiprocessor Unix-like kernel for x86 (Intel 486/Pentium) developed in Brazil.
@@ -13,9 +17,6 @@ Please check the Wiki maintained by us: https://github.com/vpereira/tropix-playg
 ## Getting Started
 
 **Quick start:**
-```bash
-./scripts/run-tropix.zsh
-```
 
 See `HACKING.md` for complete setup, installation, troubleshooting, and network configuration.
 
@@ -44,11 +45,10 @@ Source code from NCE/UFRJ, I just had to modify the libc/fmt/licenca (licença),
 - `cmd/` - Command utilities
 - `sxwin` - X-Window Graphical Interface
 
-## Documentation
-
-- `HACKING.md` - QEMU setup and running guide
-- `install.txt` - Complete installation guide
-
 ## License
 
-Copyright NCE/UFRJ - See source files for licensing details.
+Tropix is licensed under the GNU General Public License (GPLv2).
+See `lib/libc/fmt/licenca/licenca.r` for the full text (Portuguese and
+English), plus third-party notices for drivers derived from BSD code.
+
+Copyright © NCE/UFRJ.
