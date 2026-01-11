@@ -8,6 +8,8 @@ Tropix is a real-time multiprocessor Unix-like kernel for x86 (Intel 486/Pentium
 
 Official website: http://www.tropix.nce.ufrj.br/
 
+Please check the Wiki maintained by us: https://github.com/vpereira/tropix-playground/wiki
+
 ## Getting Started
 
 **Quick start:**
