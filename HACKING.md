@@ -1,5 +1,7 @@
 # Tropix Development Guide
 
+Those tips should end up in the Wiki
+
 Running Tropix OS 4.9.0 in QEMU on modern systems.
 
 ## Prerequisites
@@ -138,6 +140,69 @@ Tropix includes:
 - `rm -rf` does not delete directories; use `rmtree -f` for non-empty directories and `rmdir -f` for empty ones.
 
 ![Lua interpreter](images/lua.png)
+
+## Building and Installing
+
+There is no global `make install`. Each package uses `make cp` (or `cmpqcp`) to copy built artifacts into the system tree.
+
+### libc
+
+Build and install the full libc:
+```bash
+cd lib/libc
+make
+make cp
+```
+
+Install a single syscall wrapper:
+```bash
+cd lib/libc/sys/<name>/pc
+make
+make cp
+```
+
+### cmd
+
+Build and install a single command:
+```bash
+cd cmd/<name>
+make
+make cp
+```
+
+Build and install all commands (copy only when different):
+```bash
+cd cmd
+make cmpqcp
+```
+
+### Kernel build tip: /tmp RAM disk size
+
+The kernel link step uses temporary files. If `/tmp` is too small (RAM disk),
+`ld` may fail with errors like “Erro na escrita da seção "TEXT"”.
+
+Increase the RAM disk size via `edscb` (values are in KB), then reboot:
+```bash
+edscb /tropix
+ramd0sz=4096
+w
+```
+
+### Shared library (`/lib/libt.o`) refresh
+
+`cc` links against the shared library `/lib/libt.o` by default. After adding a new
+libc symbol (like a syscall wrapper), rebuild and reload `libt.o` or reboot:
+```bash
+cd cmd/ld
+make
+make libt.o
+cp libt.o /lib/libt.o
+```
+Reload without reboot (use `ldshlib` to find the index):
+```bash
+ldshlib -v
+ldshlib -u <index>
+```
 
 
 ## Troubleshooting
