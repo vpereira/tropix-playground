@@ -97,6 +97,7 @@ extern void		idle_inc_color (void);
 extern void		inval_TLB (pg_t, pg_t);
 extern int		kmkdev (const char *, long, dev_t);
 extern int		log2 (int number);
+extern void		rng_get (char *buf, int count);
 extern void		nfs2_get_ustat (const SB *unisp, USTAT *up);
 extern const char	*region_nm_edit (int region);
 extern int		t1_mount (SB *);

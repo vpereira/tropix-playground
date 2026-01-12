@@ -58,8 +58,8 @@ rng_seed (unsigned long v)
 	SPINFREE (&rng_lock);
 }
 
-static void
-rng_fill (char *buf, int count)
+void
+rng_get (char *buf, int count)
 {
 	unsigned long	x;
 	int		i;
@@ -111,7 +111,7 @@ rngread (IOREQ *iop)
 	while (count > 0)
 	{
 		n = (count > (int)sizeof (tmp)) ? (int)sizeof (tmp) : count;
-		rng_fill (tmp, n);
+		rng_get (tmp, n);
 
 		if (unimove (area, tmp, n, SU) < 0)
 		{

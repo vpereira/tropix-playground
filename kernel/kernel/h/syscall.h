@@ -72,6 +72,7 @@ extern long	getpid (void);
 extern long	getppid (void);
 extern long	getsn (void);
 extern int	gettzmin (void);
+extern int	getentropy (void *, int);
 extern int	getuid (void);
 extern int	ioctl (int, int, ...);
 extern int	itnet (int, int, ...);

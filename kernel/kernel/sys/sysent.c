@@ -59,6 +59,7 @@ int	getpty ();
 int	getscb ();
 int	getsn ();
 int	gettzmin ();
+int	getentropy ();
 int	getuid ();
 int	gtime ();
 int	gtty ();
@@ -235,7 +236,7 @@ const SYSENT	sysent[NSYSCALL] =
 	rename,		2,	/*  85 = rename		*/
 	llseek,		5,	/*  86 = llseek		*/
 	getpty,		1,	/*  87 = getpty		*/
-	nosys,		0,	/*  88 =		*/
+	getentropy,	2,	/*  88 = getentropy	*/
 	nosys,		0,	/*  89 =		*/
 	nosys,		0,	/*  90 =		*/
 	nosys,		0,	/*  91 =		*/
