@@ -216,6 +216,43 @@ getscb (SCB *sp)
 
 /*
  ****************************************************************
+ *	Chamada ao sistema "getentropy"			*
+ ****************************************************************
+ */
+int
+getentropy (void *buf, int len)
+{
+	char		tmp[64];
+	char		*area;
+	int		count;
+	int		n;
+
+	if (len < 0 || len > 256)
+		{ u.u_error = EINVAL; return (-1); }
+
+	if (len == 0)
+		return (0);
+
+	area = (char *)buf;
+	count = len;
+
+	while (count > 0)
+	{
+		n = (count > (int)sizeof (tmp)) ? (int)sizeof (tmp) : count;
+		rng_get (tmp, n);
+
+		if (unimove (area, tmp, n, SU) < 0)
+			{ u.u_error = EFAULT; return (-1); }
+
+		area  += n;
+		count -= n;
+	}
+
+	return (0);
+}
+
+/*
+ ****************************************************************
  *	Chamada ao sistema "setscb"				*
  ****************************************************************
  */

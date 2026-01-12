@@ -43,6 +43,7 @@ sys:
 	cd getscb/$MAC;		make
 	cd getsn/$MAC;		make
 	cd gettzmin/$MAC;	make
+	cd getentropy/$MAC;	make
 	cd getuid/$MAC;		make
 	cd inopen/$MAC;		make
 	cd instat/$MAC;		make
@@ -140,6 +141,7 @@ n:
 	cd getscb/$MAC;		make -n
 	cd getsn/$MAC;		make -n
 	cd gettzmin/$MAC;	make -n
+	cd getentropy/$MAC;	make -n
 	cd getuid/$MAC;		make -n
 	cd inopen/$MAC;		make -n
 	cd instat/$MAC;		make -n
