@@ -1,0 +1,58 @@
+name: Latin-1 check
+
+on:
+  push:
+    paths:
+      - "cmd/**"
+      - "lib/**"
+      - "libs/**"
+      - "kernel/**"
+      - "sxwin/**"
+  pull_request:
+    paths:
+      - "cmd/**"
+      - "lib/**"
+      - "libs/**"
+      - "kernel/**"
+      - "sxwin/**"
+
+jobs:
+  latin1-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fail on UTF-8 non-ASCII text
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          roots = ["cmd", "lib", "libs", "kernel", "sxwin"]
+          bad = []
+
+          for root in roots:
+            root_path = Path(root)
+            if not root_path.exists():
+              continue
+            for path in root_path.rglob("*"):
+              if not path.is_file():
+                continue
+              data = path.read_bytes()
+              if b"\x00" in data:
+                continue
+              try:
+                text = data.decode("utf-8")
+              except UnicodeDecodeError:
+                continue
+              if any(ord(ch) > 127 for ch in text):
+                bad.append(path)
+
+          if bad:
+            print("UTF-8 non-ASCII files found (expected ISO-8859-1 or ASCII):")
+            for path in bad:
+              print(f"- {path}")
+            sys.exit(1)
+          PY
