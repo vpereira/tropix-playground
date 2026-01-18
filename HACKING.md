@@ -52,6 +52,260 @@ Boot process and partitioning instructions are in `install.txt`. Quick summary:
 
 Refer to `install.txt` for complete installation procedure.
 
+## Build a Bootable ISO from Source
+
+This section describes how to build a custom `tropix.iso` after making changes to the codebase.
+
+I just opened the iso and looked into
+
+### ISO Structure Overview
+
+The bootable ISO contains these key files:
+
+| File | Size | Description | Source |
+|------|------|-------------|--------|
+| `boot.cd` | ~432 bytes | El Torito boot image | `kernel/boot/boot1/cd.boot1` |
+| `boot` | ~141 KB | Stage 2 bootloader | `kernel/boot/boot2/boot` |
+| `boot.gz` | ~9 MB | Compressed root filesystem (32MB uncompressed) | T1 filesystem image |
+| `tropix` | ~576 KB | Kernel binary | `kernel/kernel/tropix` |
+| `install.txt` | ~110 KB | Installation guide | `install.txt` |
+| `winsys/` | optional | X Window System files | X11 distribution |
+
+### Boot Process
+
+1. **BIOS** reads the ISO and loads the El Torito boot image (`boot.cd`)
+2. **boot1** (CD variant) displays version, prompts for boot2 filename, loads `boot`
+3. **boot2** at `boot>` prompt, accepts flags like `-i` to decompress `boot.gz` to RAM
+4. **Kernel** boots with the decompressed T1 filesystem as a RAM disk (`/dev/ramd0`)
+
+### Build Steps (on Tropix VM)
+
+Adjust paths if sources are not under `/usr/src` or `/src/sys/tropix/pc`.
+
+#### Step 1: Build Boot Loaders
+
+```bash
+# Build all boot stages
+cd /usr/src/kernel/boot
+make
+
+# Or build individually:
+
+# boot1 for CD (produces cd.boot1)
+cd /usr/src/kernel/boot/boot1
+make cd.boot1
+
+# boot2 (produces boot)
+cd /usr/src/kernel/boot/boot2
+make
+
+# Install to /etc/boot/ (optional, for installed system)
+cd /usr/src/kernel/boot
+make cp
+```
+
+#### Step 2: Build the Kernel
+
+```bash
+cd /usr/src/kernel/kernel
+make
+
+# Install to /tropix (optional)
+make cp
+```
+
+**Tip:** If `ld` fails with "Erro na escrita da seção TEXT", increase `/tmp` RAM disk size:
+```bash
+edscb /tropix
+ramd0sz=4096
+w
+# Then reboot
+```
+
+#### Step 3: Build Libraries (if modified)
+
+```bash
+cd /usr/src/lib
+make
+make cp
+```
+
+#### Step 4: Build Commands (if modified)
+
+```bash
+# Build all commands (copies only changed files)
+cd /usr/src/cmd
+make cmpqcp
+
+# Or build a single command
+cd /usr/src/cmd/<name>
+make
+make cp
+```
+
+#### Step 5: Create boot.gz (Root Filesystem Image)
+
+Boot2 expects a gzip-compressed T1 filesystem image. The CD boot allocates 32 MB for it.
+
+```bash
+# Create a 32MB T1 filesystem in a regular file
+# 65536 blocks * 512 bytes = 32MB
+mkfst1 -r -f /tmp/boot.img 65536 "TROPIX_BOOT" "ramd0"
+
+# Mount the image
+mount /tmp/boot.img /mnt
+
+# Copy the complete root filesystem
+# Option A: Copy from running system
+cptree / /mnt
+
+# Option B: Copy from a prepared rootfs directory
+cptree /path/to/rootfs /mnt
+
+# Ensure essential files exist:
+# /tropix, /etc/init, /etc/fstab, /etc/passwd
+# /bin/sh, /bin/login, /lib/libt.o
+# /dev/console, /dev/null, /dev/ramd0
+
+# Unmount
+sync
+umount /mnt
+
+# Compress the image
+gzip -9 /tmp/boot.img
+# Result: /tmp/boot.img.gz (~9MB)
+```
+
+**Minimal boot.gz contents:**
+```
+/tropix              # Kernel
+/etc/init            # Init configuration
+/etc/fstab           # Filesystem table
+/etc/passwd          # User database
+/etc/boot/           # Boot files
+/bin/sh              # Shell
+/bin/login           # Login program
+/lib/libt.o          # Shared library
+/dev/console         # Console device
+/dev/null            # Null device
+/dev/ramd0           # RAM disk device
+```
+
+#### Step 6: Assemble ISO Contents
+
+Gather all files into a staging directory:
+
+```bash
+mkdir -p /tmp/iso
+
+# Boot files
+cp /usr/src/kernel/boot/boot1/cd.boot1 /tmp/iso/boot.cd
+cp /usr/src/kernel/boot/boot2/boot /tmp/iso/boot
+
+# Kernel
+cp /usr/src/kernel/kernel/tropix /tmp/iso/tropix
+
+# Compressed filesystem
+cp /tmp/boot.img.gz /tmp/iso/boot.gz
+
+# Documentation
+cp /usr/doc/install.txt /tmp/iso/install.txt
+
+# Optional: X Window System
+mkdir -p /tmp/iso/winsys
+cptree /usr/xwin /tmp/iso/winsys/
+```
+
+#### Step 7: Create the ISO (on Linux/macOS host)
+
+Tropix does not include an ISO authoring tool (i found some under cmd, i have to test it). Transfer files to your host system.
+
+**Using mkisofs (genisoimage):**
+```bash
+cd /path/to/iso_contents
+mkisofs -v -o tropix.iso -V TROPIXBOOT -J -R -b boot.cd -no-emul-boot .
+```
+
+**Using xorriso:**
+```bash
+cd /path/to/iso_contents
+xorriso -as mkisofs -v -o tropix.iso -V TROPIXBOOT -J -R -b boot.cd -no-emul-boot .
+```
+
+**Options explained:**
+| Option | Description |
+|--------|-------------|
+| `-v` | Verbose output |
+| `-o tropix.iso` | Output filename |
+| `-V TROPIXBOOT` | Volume label (**must be TROPIXBOOT**) |
+| `-J` | Generate Joliet extensions (Windows compatibility) |
+| `-R` | Generate Rock Ridge extensions (Unix compatibility) |
+| `-b boot.cd` | El Torito boot image filename |
+| `-no-emul-boot` | No disk emulation (boot image loaded directly) |
+
+#### Step 8: Test the ISO
+
+```bash
+qemu-system-i386 \
+  -m 128 \
+  -cpu 486 \
+  -cdrom tropix.iso \
+  -boot d
+```
+
+At the `boot>` prompt, type `-i` to decompress the filesystem to RAM and boot.
+
+### Transferring Files Between Host and Tropix
+
+**Option 1: FTP (if network configured)**
+```bash
+# From Tropix, connect to host FTP server
+ftp <host-ip>
+```
+
+**Option 2: Shared FAT disk image**
+```bash
+# On host: create FAT image
+dd if=/dev/zero of=shared.img bs=1M count=100
+mkfs.vfat shared.img
+
+# Add to QEMU command:
+-hdb shared.img
+
+# In Tropix:
+mount /dev/hdb1 /mnt
+```
+
+**Option 3: Extract from mounted ISO**
+```bash
+# Mount original ISO in Tropix
+mount /dev/hdb /cdrom   # if CD-ROM is second drive
+```
+
+### Quick Reference
+
+| Task | Command |
+|------|---------|
+| Build all boot stages | `cd kernel/boot && make` |
+| Build CD boot sector | `cd kernel/boot/boot1 && make cd.boot1` |
+| Build boot2 | `cd kernel/boot/boot2 && make` |
+| Build kernel | `cd kernel/kernel && make` |
+| Build all commands | `cd cmd && make cmpqcp` |
+| Create T1 filesystem | `mkfst1 -r -f <file> <blocks> <volname> <devname>` |
+| Copy directory tree | `cptree <src> <dst>` |
+| Create device node | `mknod <name> c|b <major> <minor>` |
+| Compress file | `gzip -9 <file>` |
+
+### ISO Build Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| ISO doesn't boot | Verify `boot.cd` exists and volume label is `TROPIXBOOT` |
+| "Arquivo BOOT nao encontrado" | `boot` file missing from ISO root |
+| Kernel panic on boot | Check `boot.gz` has all required files and `/dev` nodes |
+| "Erro na escrita" during kernel build | Increase `/tmp` RAM disk size via `edscb` |
+| Boot hangs at percentage | Ensure `-m 128` (128MB RAM) in QEMU |
+
 ## Network Configuration
 
 ### Supported Cards
@@ -207,16 +461,32 @@ ldshlib -u <index>
 
 ## Troubleshooting
 
-**vmnet errors on macOS:** Run with sudo if you want to access the network on your host. 
+**vmnet errors on macOS:** Run with sudo if you want to access the network on your host.
 Check QEMU has vmnet support: `qemu-system-i386 -netdev help | grep vmnet`
 
 **Partition not bootable:** Use fdisk (`boot> -f`), activate with `a` command, write with `w`.
 
+**ISO doesn't boot:** Verify `boot.cd` exists in ISO root and volume label is exactly `TROPIXBOOT`.
+
+**"Arquivo BOOT nao encontrado":** The `boot` file (boot2 bootloader) is missing from the ISO root.
+
+**Kernel panic on boot:** Ensure `boot.gz` contains all required files and device nodes.
+
+**"Erro na escrita da seção TEXT":** Increase `/tmp` RAM disk size via `edscb`, then reboot.
+
+**Boot hangs at percentage:** Ensure QEMU has at least 128MB RAM (`-m 128`).
+
 ## Files
 
-- `install.txt` - Complete installation guide
+- `install.txt` - Complete installation guide (Portuguese)
 - `scripts/run-tropix.zsh` - QEMU launcher script
-- `lib/`, `kernel/`, `cmd/` - Source code
+- `kernel/` - Kernel and bootloader source code
+- `kernel/boot/boot1/cd.boot1.s` - CD-ROM boot sector source
+- `kernel/boot/boot2/` - Stage 2 bootloader source
+- `kernel/kernel/` - Kernel source
+- `lib/` - System libraries (libc, libcurses, libm486, libxti)
+- `cmd/` - User commands and utilities
+- `sxwin/` - X Window System
 
 
 Happy hacking and Have a lot of fun!
