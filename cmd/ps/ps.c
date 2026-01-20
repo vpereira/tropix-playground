@@ -52,6 +52,7 @@ entry int	kflag;		/* Mata processos */
 entry int	aflag;		/* Todos os processos */
 entry int	vflag;		/* Verbose */
 entry int	dflag;		/* Debug */
+entry int	uflag;		/* Mostra usuario dono do processo */
 
 /*
  ******	Macro-definições ****************************************
@@ -118,7 +119,7 @@ main (int argc, const char *argv[])
 	/*
 	 *	Analisa as opções
 	 */
-	while ((opt = getopt (argc, argv, "axlLkt:vdMH")) != EOF)
+	while ((opt = getopt (argc, argv, "auxlLkt:vdMH")) != EOF)
 	{
 		switch (opt)
 		{
@@ -126,6 +127,10 @@ main (int argc, const char *argv[])
 			aflag++;
 			break;
 
+
+		    case 'u':			/* Mostra usuario */
+			uflag++;
+			break;
 		    case 'x' : 			/* Mesmo sem TTY associado */
 			xflag++;
 			aflag++;
@@ -260,6 +265,8 @@ main (int argc, const char *argv[])
 	elif (lflag >= 3)
 		printf (" F S UID            ");
 
+	if (uflag && lflag == 0)
+		printf ("USER     ");
 	printf ("TTY   PID ");
 
 	if   (lflag == 1)
@@ -492,6 +499,15 @@ print_process (const UPROC *up, const char *tty_nm, int hz, const char *proc_use
 			printf ("    ");
 	}
 
+	if (uflag && lflag == 0)
+	{
+		const char *user_nm;
+		if   (proc_user_nm != NOSTR)
+			user_nm = proc_user_nm;
+		elif ((user_nm = pwcache (up->u_euid)) == NOSTR)
+			user_nm = "???";
+		printf ("%-8.8s ", user_nm);
+	}
 	printf ("%-3.3s ", tty_nm);
 	printf ("%5u ", up->u_pid);
 
@@ -720,7 +736,7 @@ help (void)
 		"%s - imprime informações sobre processos\n"
 		"\n%s\n"
 		"\nSintaxe:\n"
-		"\t%s [-axlk] [-t <tty>] [<pid> ...]\n",
+		"\t%s [-auxlk] [-t <tty>] [<pid> ...]\n",
 		pgname, pgversion, pgname
 	);
 	fprintf
@@ -728,6 +744,7 @@ help (void)
 		"\nOpções:"
 		"\t--: Lista simples de processos do usuário\n"
 		"\t-a: Todos processos associados a um terminal\n"
+		"\t-u: Mostra o usuario dono do processo\n"
 		"\t-x: Todos processos\n"
 		"\t-l: Lista longa de informações\n"
 		"\t    (se dado duas vezes, lista longa com outras informações,\n"

@@ -12,7 +12,7 @@ imprime informações sobre processos
 .sp
 .b SINTAXE
 .in 5
-ps [-axlk] [-t <tty>] [<pid> ...]
+ps [-auxlk] [-t <tty>] [<pid> ...]
 
 .in
 .sp
@@ -41,6 +41,11 @@ Fornece informações sobre todos os processos associados a algum terminal
 (e não apenas sobre os processos do usuário que está utilizando o comando "ps").
 Esta opção só é permitida ao superusuário.
 
+
+.ip -u 7
+Mostra o nome do usuario dono de cada processo na lista curta.
+Quando usada junto com "-a" e "-x", permite visualizar todos os processos
+com seus respectivos donos (similar ao "ps aux" de outros sistemas UNIX).
 .ip -x 7
 Fornece informações sobre todos os processos,
 quer tenham um terminal associado ou não.
