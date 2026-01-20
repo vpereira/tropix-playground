@@ -380,6 +380,7 @@ ether_receive_arp_frame (ITBLOCK *bp)
 	ARP		*ap;
 	const ITSCB	*ip = &itscb;
 	ROUTE		*rp;
+	ROUTE		*target_rp = NOROUTE;
 	ETH_H		*ep;
 	IPADDR		ip_src_addr, ip_dst_addr;
 	int		ar_header, ar_proto, ar_op;
@@ -482,7 +483,7 @@ ether_receive_arp_frame (ITBLOCK *bp)
 			insert++;
 
 		if (rp->r_my_addr == ip_dst_addr)
-			{ we_are_target++; insert++; }
+			{ we_are_target++; insert++; target_rp = rp; }
 	}
 
 	/*
@@ -532,21 +533,9 @@ ether_receive_arp_frame (ITBLOCK *bp)
 	}
 
 	/*
-	 *	Prepara a resposta (Aproveita o mesmo bloco)
+	 *	Usa a rota onde somos o alvo (target_rp), encontrada acima.
 	 */
-	if ((rp = get_route_entry (ip_src_addr)) == NOROUTE)
-	{
-#ifdef	MSG
-		if (ip->it_report_error)
-		{
-			printf
-			(	"%g: Não sei rotear a resposta ARP para o endereço IP %s\n",
-				edit_ipaddr (ip_src_addr)
-			);
-		}
-#endif	MSG
-		put_it_block (bp); return;
-	}
+	rp = target_rp;
 
 	bp->it_route = rp;
 
@@ -929,6 +918,7 @@ ether_receive_arp_frame (ITBLOCK *bp)
 	ARP		*ap;
 	const ITSCB	*ip = &itscb;
 	ROUTE		*rp;
+	ROUTE		*target_rp = NOROUTE;
 	ETH_H		*ep;
 	IPADDR		ip_src_addr, ip_dst_addr;
 	int		ar_header, ar_proto, ar_op;
@@ -1028,7 +1018,7 @@ ether_receive_arp_frame (ITBLOCK *bp)
 			continue;
 
 		if (rp->r_my_addr == ip_dst_addr)
-			{ we_are_target++; }
+			{ we_are_target++; target_rp = rp; }
 	}
 
 #if (0)	/*******************************************************/
@@ -1081,21 +1071,9 @@ ether_receive_arp_frame (ITBLOCK *bp)
 	}
 
 	/*
-	 *	Prepara a resposta (Aproveita o mesmo bloco)
+	 *	Usa a rota onde somos o alvo (target_rp), encontrada acima.
 	 */
-	if ((rp = get_route_entry (ip_src_addr)) == NOROUTE)
-	{
-#ifdef	MSG
-		if (ip->it_report_error)
-		{
-			printf
-			(	"%g: Não sei rotear a resposta ARP para o endereço IP %s\n",
-				edit_ipaddr (ip_src_addr)
-			);
-		}
-#endif	MSG
-		put_it_block (bp); return;
-	}
+	rp = target_rp;
 
 	bp->it_route = rp;
 
