@@ -750,7 +750,18 @@ read_itnet_dev (void)
 			rp->r_mask	   = 0;
 		   	rp->r_net_addr	   = 0;
 		   /***	rp->r_my_addr	   = last_my_addr; ***/
-		   	rp->r_gateway_addr = net_addr + 1;
+			/*
+			 *	Verifica se foi dado "default=IP" ou apenas "default"
+			 */
+			if (cp[7] == '=')
+			{
+				if ((rp->r_gateway_addr = t_str_to_addr (cp + 8)) == -1)
+					goto bad_addr;
+			}
+			else
+			{
+				rp->r_gateway_addr = net_addr + 1;
+			}
 		   	rp->r_dhcp	   = 0;
 		   	rp->r_default	   = 1;
 
