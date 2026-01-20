@@ -421,6 +421,12 @@ setuser (UPROC const *kup, UARG *uap)
 
 	phys_addr = (void *)PGTOBY (rgp->rgg_paddr + rgp->rgg_size);
 
+	/*
+	 *	Se a pilha tem tamanho zero, nao tenta mapear
+	 */
+	if (rgp->rgg_size == 0)
+		{ phys (rgp, 0, 0); memsetl (uap, 0, sizeof (UARG) / sizeof (long)); return (up); }
+
 	phys (rgp, 0, 0);
 
 	/*
