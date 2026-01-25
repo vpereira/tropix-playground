@@ -23,8 +23,10 @@
 #include <sys/region.h>
 #include <sys/syscall.h>
 #include <sys/uerror.h>
+#include <sys/signal.h>
 #include <sys/uproc.h>
 #include <sys/mmu.h>
+#include <fcntl.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +84,6 @@ static void	format_time (char *buf, int bufsz, time_t ticks, int hz);
 static int	cmp_proc (const void *a, const void *b);
 static void	print_help (void);
 
-extern unsigned	sleep (unsigned);
 
 /*
  ****************************************************************
@@ -102,7 +103,7 @@ main (int argc, const char *argv[])
 	const UPROCV	*uvp, *procv, *last_procv, *end_procv;
 	int		procv_delta;
 	SCB		scb;
-	TOPPROC		*vec = NOSTR;
+	TOPPROC	*vec = NOVOID;
 	int		max_proc = 0;
 
 	/*
@@ -178,7 +179,7 @@ main (int argc, const char *argv[])
 	 */
 	max_proc = scb.y_nproc;
 	vec = (TOPPROC *)malloc (max_proc * sizeof (TOPPROC));
-	if (vec == NOSTR)
+	if (vec == NOVOID)
 	{
 		fprintf (stderr, "Memoria esgotada\n");
 		phys (procv, 0, 0);
