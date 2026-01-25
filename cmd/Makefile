@@ -145,6 +145,7 @@ make:
 		-cd prregion;	make
 		-cd prsync;	make
 		-cd ps;		make
+		-cd top;	make
 		-cd putcvtb;	make
 		-cd pwd;	make
 		-cd reduce;	make
@@ -346,6 +347,7 @@ n:
 		-cd prregion;	make -n
 		-cd prsync;	make -n
 		-cd ps;		make -n
+		-cd top;	make -n
 		-cd putcvtb;	make -n
 		-cd pwd;	make -n
 		-cd reduce;	make -n
@@ -547,6 +549,7 @@ b:
 		-cd prregion;	make -b
 		-cd prsync;	make -b
 		-cd ps;		make -b
+		-cd top;	make -b
 		-cd putcvtb;	make -b
 		-cd pwd;	make -b
 		-cd reduce;	make -b
@@ -748,6 +751,7 @@ lint:
 		-cd prregion;	make lint
 		-cd prsync;	make lint
 		-cd ps;		make lint
+		-cd top;	make lint
 		-cd putcvtb;	make lint
 		-cd pwd;	make lint
 		-cd reduce;	make lint
@@ -949,6 +953,7 @@ cmp:
 		-cd prregion;	make cmp
 		-cd prsync;	make cmp
 		-cd ps;		make cmp
+		-cd top;	make cmp
 		-cd putcvtb;	make cmp
 		-cd pwd;	make cmp
 		-cd reduce;	make cmp
@@ -1150,6 +1155,7 @@ cmpq:
 		-cd prregion;	make cmpq
 		-cd prsync;	make cmpq
 		-cd ps;		make cmpq
+		-cd top;	make cmpq
 		-cd putcvtb;	make cmpq
 		-cd pwd;	make cmpq
 		-cd reduce;	make cmpq
@@ -1351,6 +1357,7 @@ cmpqcp:
 		-cd prregion;	make cmpqcp
 		-cd prsync;	make cmpqcp
 		-cd ps;		make cmpqcp
+		-cd top;	make cmpqcp
 		-cd putcvtb;	make cmpqcp
 		-cd pwd;	make cmpqcp
 		-cd reduce;	make cmpqcp
@@ -1552,6 +1559,7 @@ man:
 		-cd prregion;	make man modif
 		-cd prsync;	make man modif
 		-cd ps;		make man modif
+		-cd top;	make man modif
 		-cd putcvtb;	make man modif
 		-cd pwd;	make man modif
 		-cd reduce;	make man modif
@@ -1753,6 +1761,7 @@ unld:
 		-cd prregion;	make unld
 		-cd prsync;	make unld
 		-cd ps;		make unld
+		-cd top;	make unld
 		-cd putcvtb;	make unld
 		-cd pwd;	make unld
 		-cd reduce;	make unld
@@ -1857,4 +1866,3 @@ pensave:
 		-mount /pen
 		-pento $cmd
 		-umount /pen
-
