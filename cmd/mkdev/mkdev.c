@@ -120,6 +120,7 @@ const RAWDEVTB	rawdevtb[] =
 	"ps2m",		0,	/*** 0,		***/	PS2_MAJOR,	0,	S_IFCHR|0666,
 	"ums0",		0,	/*** 0,		***/	UMS_MAJOR,	0,	S_IFCHR|0666,
 	"ulp%01d",	0,	/*** 1,		***/	ULP_MAJOR,	0,	S_IFCHR|0666,
+	"urandom",	0,	/*** 0,		***/	RNG_MAJOR,	0,	S_IFCHR|0666,
 	NOSTR
 };
 

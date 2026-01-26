@@ -54,6 +54,7 @@ enum
 	LIVE_MAJOR,		/* Sound Blaster Live */
 	UMS_MAJOR,		/* Camundongo USB */
 	ULP_MAJOR,		/* Impressora USB */
+	RNG_MAJOR,		/* Gerador simples de numeros aleatorios */
 };
 
 /*
