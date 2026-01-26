@@ -55,6 +55,7 @@ Refer to `install.txt` for complete installation procedure.
 ## Build a Bootable ISO from Source
 
 This section describes how to build a custom `tropix.iso` after making changes to the codebase.
+See `iso/README.md` for the source-only ISO recipe and helper scripts.
 
 I just opened the iso and looked into
 
